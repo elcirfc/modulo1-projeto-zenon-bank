@@ -22,7 +22,7 @@ public record Transaction(
         Objects.requireNonNull(origin, "origin should not be null");
         Objects.requireNonNull(destination, "destination should not be null");
 
-        if (amount.compareTo(BigDecimal.ZERO) < 0) {
+        if (amount.signum() < 0) {
             throw new IllegalArgumentException("amount should be positive: " + amount);
         }
     }

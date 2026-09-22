@@ -18,11 +18,11 @@ public record Customer(
         Objects.requireNonNull(oldBalance, "oldBalance should not be null");
         Objects.requireNonNull(newBalance, "newBalance should not be null");
 
-        if (oldBalance.compareTo(BigDecimal.ZERO) < 0) {
+        if (oldBalance.signum() < 0) {
             throw new IllegalArgumentException("oldBalance should be positive: " + oldBalance);
         }
 
-        if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+        if (newBalance.signum() < 0) {
             throw new IllegalArgumentException("newBalance should be positive: " + newBalance);
         }
     }
