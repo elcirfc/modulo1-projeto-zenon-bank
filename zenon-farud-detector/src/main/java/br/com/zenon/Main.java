@@ -8,13 +8,11 @@ import java.util.List;
 public class Main {
     void main() {
         TransactionIngestor ingestor = new TransactionIngestor();
-        String fileName = "data/PS_20174392719_1491204439457_log.csv";
+        String fileName = "data/paysim_with_bad_data.csv";
         List<Transaction> transactions = ingestor.read(fileName);
 
         System.out.println("Total de transações lidas: " + transactions.size());
-        System.out.println("\n--- 10 Primeiras Transações Importadas ---");
-        transactions.stream()
-                .limit(10)
-                .forEach(System.out::println);
+        System.out.println("\n--- Transações Importadas ---");
+        transactions.forEach(System.out::println);
     }
 }
