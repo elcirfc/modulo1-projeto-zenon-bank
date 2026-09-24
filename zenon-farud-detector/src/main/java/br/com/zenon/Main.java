@@ -18,6 +18,7 @@ public class Main {
 
         List<Transaction> transactions = ingestor.read(fileName, limit);
 
+        // Alimenta FraudTransações com as transações lidas do arquivo.
         FraudAnalyzer analyzer = new FraudAnalyzer(transactions);
 
         // 1. Apenas transações onde isFraud == true, imprima o tamanho da lista.
@@ -27,7 +28,7 @@ public class Main {
         // 2. Imprima as 3 fraudes de maior valor (amount).
         List<Transaction> top3Frauds = analyzer.getTopFraudsByAmount(3);
         System.out.println("2. Top 3 Fraudes de Maior Valor:");
-        top3Frauds.forEach(t -> System.out.println(String.format(Locale.US, "%.2f", t.amount())));
+        top3Frauds.forEach(t -> System.out.println("%.2f".formatted(t.amount())));
 
         // 3. Obter apenas os nomes dos clientes de origem (nameOrig) dessas fraudes e depois gere uma lista sem repetições (Set ou distinct) com os 5 maiores clientes suspeitos.
         List<Transaction> top5Suspects = analyzer.getTopSuspectOriginTransactions(5);
