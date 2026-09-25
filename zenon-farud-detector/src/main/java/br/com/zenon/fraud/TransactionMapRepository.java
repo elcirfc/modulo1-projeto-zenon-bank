@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class TransactionMapRepository implements TransactionRepository {
 
@@ -18,6 +20,16 @@ public class TransactionMapRepository implements TransactionRepository {
                 }
             }
         }
+
+//        this.transactionsByOriginCustomer =
+//                transactions.stream()
+//                        .collect(Collectors.toMap(Transaction -> Transaction.origin().name(),
+//                                Function.identity()));
+//
+//        this.transactionsByOriginCustomer =
+//                transactions.stream()
+//                        .collect(HashMap::new, (map,
+//                                                transaction) -> map.put(transaction.origin().name(), transaction), HashMap::putAll);
     }
 
     public TransactionMapRepository(Map<String, Transaction> transactionsByOriginCustomer) {

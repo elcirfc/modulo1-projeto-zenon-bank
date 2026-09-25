@@ -52,14 +52,14 @@ public class Main {
         TransactionRepository repository = new TransactionListRepository(transactions);
 
         String existingCustomer = "C1231006815";
-        Optional<Transaction> transactionFound = repository.findByCustomerName(existingCustomer);
+        Optional<Transaction> transactionFound = repository.findByOriginCustomerName(existingCustomer);
         transactionFound.ifPresentOrElse(
                 t -> System.out.println(" - Cliente existente (" + existingCustomer + "): " + t),
                 () -> System.out.println(" - Cliente existente (" + existingCustomer + ") não encontrado")
         );
 
         String nonExistingCustomer = "C12345";
-        Optional<Transaction> transactionNotFound = repository.findByCustomerName(nonExistingCustomer);
+        Optional<Transaction> transactionNotFound = repository.findByOriginCustomerName(nonExistingCustomer);
         transactionNotFound.ifPresentOrElse(
                 t -> System.out.println(" - Cliente inexistente (" + nonExistingCustomer + "): " + t),
                 () -> System.out.println(" - Cliente inexistente (" + nonExistingCustomer + ") não encontrado (Optional.empty)")
@@ -68,14 +68,14 @@ public class Main {
         // 7. Busca no pior caso (última transação da lista) com medição de tempo no ListRepository
         String worstCaseCustomer = "C1868032458";
         long startTimeList = System.nanoTime();
-        Optional<Transaction> worstCaseTransactionList = repository.findByCustomerName(worstCaseCustomer);
+        Optional<Transaction> worstCaseTransactionList = repository.findByOriginCustomerName(worstCaseCustomer);
         long endTimeList = System.nanoTime();
         long durationNsList = endTimeList - startTimeList;
 
         System.out.println("\n7. Medição de tempo no pior caso (ListRepository - " + worstCaseCustomer + "):");
         worstCaseTransactionList.ifPresentOrElse(
-                t -> System.out.println(" - Transação encontrada: " + t),
-                () -> System.out.println(" - Transação não encontrada")
+                IO::println,
+                () -> IO.println(" - Transação não encontrada")
         );
         System.out.println(" - Tempo decorrido (List): " + durationNsList + " ns (" + String.format(Locale.US, "%.3f", durationNsList / 1_000_000.0) + " ms)");
 
@@ -83,14 +83,14 @@ public class Main {
         TransactionRepository mapRepository = new TransactionMapRepository(transactions);
 
         long startTimeMap = System.nanoTime();
-        Optional<Transaction> transactionFoundMap = mapRepository.findByCustomerName(worstCaseCustomer);
+        Optional<Transaction> transactionFoundMap = mapRepository.findByOriginCustomerName(worstCaseCustomer);
         long endTimeMap = System.nanoTime();
         long durationNsMap = endTimeMap - startTimeMap;
 
         System.out.println("\n8. Medição de tempo no pior caso (MapRepository - " + worstCaseCustomer + "):");
         transactionFoundMap.ifPresentOrElse(
-                t -> System.out.println(" - Transação encontrada: " + t),
-                () -> System.out.println(" - Transação não encontrada")
+                t -> IO.println(" - Transação encontrada: " + t),
+                () -> IO.println(" - Transação não encontrada")
         );
         System.out.println(" - Tempo decorrido (Map):  " + durationNsMap + " ns (" + String.format(Locale.US, "%.3f", durationNsMap / 1_000_000.0) + " ms)");
     }

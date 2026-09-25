@@ -27,14 +27,4 @@ public class TransactionListRepository implements TransactionRepository {
                 .findFirst();
     }
 
-//    /**
-//     * Busca uma transação pelo nome do cliente de origem (Alias explícito).
-//     *
-//     * @param customerName Nome do cliente de origem
-//     * @return Optional contendo a transação se encontrada, ou Optional.empty() caso contrário
-//     */
-//    @Override
-//    public Optional<Transaction> findByOriginCustomerName(String customerName) {
-//        return findByCustomerName(customerName);
-//    }
 }
