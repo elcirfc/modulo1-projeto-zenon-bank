@@ -16,14 +16,19 @@ import java.util.stream.Stream;
 public class TransactionIngestor {
 
     // Código para ler grandes volume de linhas para grandes volumes de dados sem precisar ler tudo antecipadamente.
-    // Ainda guarda tudo na mémória final.
+    // Lê todas as linhas do volume. Ainda guarda tudo na mémória final.
     public List<Transaction> read(String fileName) {
+        return read(fileName, Integer.MAX_VALUE);
+    }
+
+    // Utiliza Stream com limitador de linhas a serem lidas.
+    public List<Transaction> read(String fileName, int limit) {
         Path file = Paths.get(fileName);
 
         try (Stream<String> lines = Files.lines(file)) {
             return lines
                     .skip(1)
-                    // .limit(1000)
+                    .limit(limit)
                     .map(this::parseTransaction)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
@@ -34,13 +39,14 @@ public class TransactionIngestor {
     }
 
     // Código para ler grandes volume de linhas para grandes volumes de dados.
-    // Gera menos buffer de memória.
+    // Lê todas as todas as linhas do volume. Gera menos buffer de memória.
     public List<Transaction> readBuffer(String fileName) {
-        return read(fileName, Integer.MAX_VALUE);
+        return readBuffer(fileName, Integer.MAX_VALUE);
     }
 
     // Utiliza BufferedReader para ler grandes volumes de linhas para grandes volumes de dados sem gerar buffer de memória.
-    public List<Transaction> read(String fileName, int limit) {
+    // Utiliza limitador de linhas a serem lidas.
+    public List<Transaction> readBuffer(String fileName, int limit) {
         Objects.requireNonNull(fileName, "fileName should not be null");
 
         if (fileName.isBlank()) {
