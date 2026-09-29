@@ -21,6 +21,7 @@ public class Main {
         int limit = 100_000;
 
         List<Transaction> transactions = ingestor.read(fileName, limit);
+//        List<Transaction> transactions = ingestor.read(fileName);
 
 //        FraudAnalyzer analyzer = new FraudAnalyzer(transactions);
 //
