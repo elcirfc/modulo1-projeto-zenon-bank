@@ -22,8 +22,8 @@ public class TransactionReport {
 
     private final Path filePath;
 
-    public TransactionReport(Path filePath) {
-        this.filePath = filePath;
+    public TransactionReport(String filePath) {
+        this.filePath = Path.of(filePath);
     }
 
     /**
@@ -95,7 +95,9 @@ public class TransactionReport {
      * Conta o total de fraudes no arquivo de forma lazy.
      */
     public long countFrauds() {
-        return processTransactions(stream -> stream.filter(Transaction::isFraud).count());
+        return processTransactions(
+            stream ->
+                        stream.filter(Transaction::isFraud).count());
     }
 
     /**

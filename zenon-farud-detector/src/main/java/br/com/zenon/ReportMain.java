@@ -7,13 +7,18 @@ import java.nio.file.Path;
 
 public class ReportMain {
     public static void main(String[] args) {
-        Path path = Path.of("data/PS_20174392719_1491204439457_log.csv");
-        TransactionReport report = new TransactionReport(path);
+        String fileName = "data/PS_20174392719_1491204439457_log.csv";
+        TransactionReport report = new TransactionReport(fileName);
 
         SummaryReport summary = report.generateSummaryReport();
 
-        System.out.println("Total de linhas: " + summary.totalLines());
-        System.out.println("Total de fraudes: " + summary.totalFrauds());
-        System.out.println("Valor total transacionado: " + summary.totalAmount());
+        String mensagem =
+                "Total de linhas: %d " +
+                "Total de fraudes: %d " +
+                "Valor total transacionado: %.2f";
+
+        IO.println(mensagem.formatted(summary.totalLines(), summary.totalFrauds(), summary.totalAmount())
+
+        );
     }
 }

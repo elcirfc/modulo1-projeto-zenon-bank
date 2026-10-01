@@ -86,7 +86,6 @@ public class TransactionIngestor {
     private Optional <Transaction> parseTransaction(String line) {
         try {
             String[] fields = line.split(",", -1);
-
             if (fields.length != 11) {
                 throw new IllegalArgumentException(
                         "invalid columns quantity. Expected: 11, found: " + fields.length
