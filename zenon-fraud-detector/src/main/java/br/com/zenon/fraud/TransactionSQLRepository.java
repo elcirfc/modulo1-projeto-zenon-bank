@@ -36,11 +36,11 @@ public class TransactionSQLRepository implements TransactionRepository {
         }
 
         String sql = """
-                INSERT INTO TRANSACTIONS (
-                    step, type, amount,
-                    nameOrig, oldbalanceOrg, newbalanceOrig,
-                    nameDest, oldbalanceDest, newbalanceDest,
-                    isFraud, isFlaggedFraud
+                INSERT INTO zenon_frauds.TRANSACTIONS (
+                    step, `type`, amount, 
+                    name_origin, old_balance_origin, new_balance_origin,
+                    name_recipient, old_balance_recipient, new_balance_recipient, 
+                    is_fraud, is_flagged_fraud
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
@@ -128,36 +128,51 @@ public class TransactionSQLRepository implements TransactionRepository {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    String nameOrig = rs.getString("name_origin");
-                    int step = rs.getInt("step");
-                    TransactionType type = TransactionType.valueOf(rs.getString("type"));
-                    BigDecimal amount = rs.getBigDecimal("amount");
+                    Transaction transaction = mapResultSetToTransaction(rs);
 
-                    String nameOrig = rs.getString("name_origin");
-                    BigDecimal oldbalanceOrg = rs.getBigDecimal("old_balance_origin");
-                    BigDecimal newbalanceOrig = rs.getBigDecimal("new_balance_origin");
-                    Customer origin = new Customer(nameOrig, oldbalanceOrg, newbalanceOrig);
-
-                    String nameDest = rs.getString("name_recipient");
-                    BigDecimal oldbalanceDest = rs.getBigDecimal("old_balance_recipient");
-                    BigDecimal newbalanceDest = rs.getBigDecimal("new_balance_recipient");
-                    Customer destination = new Customer(nameDest, oldbalanceDest, newbalanceDest);
-
-                    boolean isFraud = rs.getBoolean("is_fraud");
-                    boolean isFlaggedFraud = rs.getBoolean("is_flagged_fraud");
-
-                    return Optional.of(new Transaction(step, type, amount, origin, destination, isFraud, isFlaggedFraud));
+                    return Optional.of(transaction);
+                } else {
+                    IO.println("Transação não encontrada para a origin:  " + originName);
+                    return Optional.empty();
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao buscar transação por originName: " + originName, e);
         }
 
-        return Optional.empty();
+//        return Optional.empty();
     }
 
     @Override
     public Optional<Transaction> findByCustomerName(String customerName) {
         return findByOriginName(customerName);
+    }
+
+    private Transaction mapResultSetToTransaction(ResultSet rs){
+        int step = 0;
+
+        try {
+            step = rs.getInt("step");
+
+            TransactionType type = TransactionType.valueOf(rs.getString("type"));
+            BigDecimal amount = rs.getBigDecimal("amount");
+
+            String nameOrig = rs.getString("name_origin");
+            BigDecimal oldbalanceOrg = rs.getBigDecimal("old_balance_origin");
+            BigDecimal newbalanceOrig = rs.getBigDecimal("new_balance_origin");
+            Customer origin = new Customer(nameOrig, oldbalanceOrg, newbalanceOrig);
+
+            String nameDest = rs.getString("name_recipient");
+            BigDecimal oldbalanceDest = rs.getBigDecimal("old_balance_recipient");
+            BigDecimal newbalanceDest = rs.getBigDecimal("new_balance_recipient");
+            Customer destination = new Customer(nameDest, oldbalanceDest, newbalanceDest);
+
+            boolean isFraud = rs.getBoolean("is_fraud");
+            boolean isFlaggedFraud = rs.getBoolean("is_flagged_fraud");
+
+            return new Transaction(step, type, amount, origin, destination, isFraud, isFlaggedFraud);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
