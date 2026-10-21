@@ -11,6 +11,10 @@ public class TransactionMapRepository implements TransactionRepository {
 
     private final Map<String, Transaction> transactionsByOriginCustomer;
 
+    public TransactionMapRepository() {
+        this.transactionsByOriginCustomer = new HashMap<>();
+    }
+
     public TransactionMapRepository(List<Transaction> transactions) {
         this.transactionsByOriginCustomer = new HashMap<>();
         if (transactions != null) {
@@ -20,22 +24,24 @@ public class TransactionMapRepository implements TransactionRepository {
                 }
             }
         }
-
-//        this.transactionsByOriginCustomer =
-//                transactions.stream()
-//                        .collect(Collectors.toMap(Transaction -> Transaction.origin().name(),
-//                                Function.identity()));
-//
-//        this.transactionsByOriginCustomer =
-//                transactions.stream()
-//                        .collect(HashMap::new, (map,
-//                                                transaction) -> map.put(transaction.origin().name(), transaction), HashMap::putAll);
     }
 
     public TransactionMapRepository(Map<String, Transaction> transactionsByOriginCustomer) {
         this.transactionsByOriginCustomer = transactionsByOriginCustomer != null
                 ? new HashMap<>(transactionsByOriginCustomer)
                 : new HashMap<>();
+    }
+
+    @Override
+    public void save(Transaction transaction) {
+        if (transaction != null && transaction.origin() != null && transaction.origin().name() != null) {
+            this.transactionsByOriginCustomer.putIfAbsent(transaction.origin().name(), transaction);
+        }
+    }
+
+    @Override
+    public Optional<Transaction> findByOriginName(String originName) {
+        return findByCustomerName(originName);
     }
 
     /**

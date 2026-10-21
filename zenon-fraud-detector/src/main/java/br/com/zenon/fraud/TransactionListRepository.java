@@ -1,5 +1,6 @@
 package br.com.zenon.fraud;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,8 +8,24 @@ public class TransactionListRepository implements TransactionRepository {
 
     private final List<Transaction> transactions;
 
+    public TransactionListRepository() {
+        this.transactions = new ArrayList<>();
+    }
+
     public TransactionListRepository(List<Transaction> transactions) {
-        this.transactions = transactions != null ? transactions : List.of();
+        this.transactions = transactions != null ? new ArrayList<>(transactions) : new ArrayList<>();
+    }
+
+    @Override
+    public void save(Transaction transaction) {
+        if (transaction != null) {
+            this.transactions.add(transaction);
+        }
+    }
+
+    @Override
+    public Optional<Transaction> findByOriginName(String originName) {
+        return findByCustomerName(originName);
     }
 
     /**
